@@ -1,47 +1,33 @@
 import { instance } from "../../axios";
-import { setAuth, setErrors, setUser } from "../actions";
-import { DATA_CLEAR, SET_AUTH, SET_ERROR, SET_USER } from "../constantsAction";
+import { DATA_CLEAR, SET_AUTH, SET_ERROR, SET_USER } from "../actionTypes";
 
-const initialStore = {
-  loading: false,
-  loaded: false,
-  data: {},
-  error: {},
-};
+export const setUser = (payload) => ({
+  type: SET_USER,
+  payload,
+});
+export const setErrors = (message, url) => ({
+  type: SET_ERROR,
+  message,
+  url,
+});
+export const setAuth = (flag) => ({
+  type: SET_AUTH,
+  flag,
+});
+export const dataClear = () => ({
+  type: DATA_CLEAR,
+});
 
-const userReduce = (state = initialStore, action) => {
-  switch (action.type) {
-    case SET_USER:
-      return { ...state, data: { ...state.data, user: action.payload } };
-    case SET_ERROR:
-      const { url, message } = action;
-      const nameForm = url.split("/")[1];
-      return { ...state, error: { ...state.error, [nameForm]: message } };
-    case SET_AUTH:
-      return { ...state, data: { ...state.data, isAuth: action.flag } };
-    case DATA_CLEAR:
-      return {
-        loading: false,
-        loaded: false,
-        data: { isAuth: false },
-        error: {},
-      };
-    default:
-      return { ...state };
-  }
-};
-
-export const loginThunk = (form) => {
+export const loginAction = (form) => {
   return async (dispatch) => {
     try {
       const { data, status, config } = await instance().post(`/signIn`, form);
 
       if (status === 200) {
-        const { url, user } = config;
+        const { url } = config;
         const { token } = data;
         localStorage.setItem("token", token);
-        dispatch(setUser(user));
-        dispatch(setAuth(true));
+        dispatch(dataAction(token));
         dispatch(setErrors("", url));
       }
     } catch (error) {
@@ -52,17 +38,16 @@ export const loginThunk = (form) => {
     }
   };
 };
-export const registerThunk = (form) => {
+export const registerAction = (form) => {
   return async (dispatch) => {
     try {
       const { data, status, config } = await instance().post(`/signUp`, form);
 
       if (status === 200) {
-        const { token, user } = data;
+        const { token } = data;
         const { url } = config;
         localStorage.setItem("token", token);
-        dispatch(setUser(user));
-        dispatch(setAuth(true));
+        dispatch(dataAction(token));
         dispatch(setErrors("", url));
       }
     } catch (error) {
@@ -73,7 +58,7 @@ export const registerThunk = (form) => {
     }
   };
 };
-export const dataThunk = (token) => {
+export const dataAction = (token) => {
   return async (dispatch) => {
     try {
       if (!token) {
@@ -93,5 +78,3 @@ export const dataThunk = (token) => {
     }
   };
 };
-
-export default userReduce;

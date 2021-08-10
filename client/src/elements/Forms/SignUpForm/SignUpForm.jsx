@@ -40,21 +40,19 @@ const _SignUpForm = ({ onSubmit = () => {} }) => {
   };
 
   const validateShema = (name, value) => {
-    let error = "";
     switch (name) {
       case "login":
-        error = required(value) || validateEmail(value);
-        break;
+        return required(value) || validateEmail(value);
+
       case "password":
-        error = required(value) || minLength(value, 6);
-        break;
+        return required(value) || minLength(value, 6);
+
       case "confirmPassword":
-        error = required(value) || matchUp(value, form.password);
-        break;
+        return required(value) || matchUp(value, form.password);
+
       default:
-        break;
+        return "";
     }
-    return error;
   };
   return (
     <EmptyForm submitButtonText="Register" onSubmit={sendFormHendler}>

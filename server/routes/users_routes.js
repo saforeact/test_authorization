@@ -2,32 +2,29 @@ const { users } = require("../database.json");
 const jwt = require("jsonwebtoken");
 const JWTconfig = require("./JWTconfig");
 const bcrypt = require("bcrypt");
+const { saltRounds } = require("../constants");
 
 module.exports = function (app, db) {
   app.post("/signIn", (req, res) => {
     const { login, password } = req.body;
-    let user = users.filter(
+    let user = users.find(
       (user) => user.login === login && bcrypt.compare(password, user.password)
-    )[0];
+    );
     if (user) {
       const token = jwt.sign({ userId: user.userId }, JWTconfig.secretKey, {
         expiresIn: "10m",
       });
-      return res.status(200).json({ token, user });
+      return res.status(200).json({ token });
     } else {
       return res.status(400).json({ message: "This user is not found." });
     }
   });
 
   app.post("/signUp", async (req, res) => {
-    const { login, password, confirmPassword } = req.body;
+    const { login, password } = req.body;
 
-    if (password !== confirmPassword) {
-      return res.status(401).json({ message: "Password mismatch" });
-    }
-    const candidate = users.filter((user) => user.login === login)[0];
+    const candidate = users.find((user) => user.login === login);
     if (!candidate) {
-      const saltRounds = 10;
       const hashPassword = await bcrypt.hash(password, saltRounds);
       const user = {
         userId: Math.round(Math.random() * 100000),
@@ -40,7 +37,7 @@ module.exports = function (app, db) {
       });
       return res
         .status(200)
-        .json({ message: "The user has successfully registered", token, user });
+        .json({ message: "The user has successfully registered", token });
     } else {
       return res
         .status(401)

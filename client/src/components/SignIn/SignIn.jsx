@@ -2,7 +2,7 @@ import { Box, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { SignInForm } from "../../elements/Forms";
-import { loginThunk } from "../../Redux/reducers/userReduce";
+import { loginAction } from "../../redux/actions";
 
 const useStyle = makeStyles({
   wrapper: {
@@ -12,13 +12,13 @@ const useStyle = makeStyles({
     flexDirection: "column",
   },
 });
-const _SignIn = () => {
+const SignIn = () => {
   const classes = useStyle();
 
   const dispatch = useDispatch();
 
   const sendForm = (form) => {
-    dispatch(loginThunk(form));
+    dispatch(loginAction(form));
   };
   return (
     <Box className={classes.wrapper}>
@@ -28,4 +28,4 @@ const _SignIn = () => {
   );
 };
 
-export default _SignIn;
+export default SignIn;

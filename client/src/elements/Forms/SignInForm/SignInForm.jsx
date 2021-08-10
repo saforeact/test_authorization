@@ -14,18 +14,16 @@ const _SignInForm = ({ onSubmit = () => {} }) => {
   });
 
   const validateShema = (name, value) => {
-    let error = "";
     switch (name) {
       case "login":
-        error = required(value) || validateEmail(value);
-        break;
+        return required(value) || validateEmail(value);
+
       case "password":
-        error = required(value) || minLength(value, 6);
-        break;
+        return required(value) || minLength(value, 6);
+
       default:
-        break;
+        return "";
     }
-    return error;
   };
 
   const setFormHendler = (e) => {

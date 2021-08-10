@@ -2,7 +2,8 @@ import { Box, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { SignUpForm } from "../../elements/Forms";
-import { registerThunk } from "../../Redux/reducers/userReduce";
+import { registerAction } from "../../redux/actions";
+
 const useStyle = makeStyles({
   wrapper: {
     display: "flex",
@@ -11,12 +12,12 @@ const useStyle = makeStyles({
     flexDirection: "column",
   },
 });
-const _SignUp = () => {
+const SignUp = () => {
   const classes = useStyle();
   const dispatch = useDispatch();
 
   const sendRegisterForm = (form) => {
-    dispatch(registerThunk(form));
+    dispatch(registerAction({ login: form.login, password: form.password }));
   };
   return (
     <Box className={classes.wrapper}>
@@ -26,4 +27,4 @@ const _SignUp = () => {
   );
 };
 
-export default _SignUp;
+export default SignUp;

@@ -1,7 +1,3 @@
-import _Dashboard from "./Dashboard/Dashboard";
-import _SignIn from "./SignIn/SignIn";
-import _SignUp from "./SignUp/SignUp";
-
-export const SignIn = _SignIn;
-export const SignUp = _SignUp;
-export const Dashboard = _Dashboard;
+export { default as SignIn } from "./SignIn/SignIn";
+export { default as SignUp } from "./SignUp/SignUp";
+export { default as Dashboard } from "./Dashboard/Dashboard";

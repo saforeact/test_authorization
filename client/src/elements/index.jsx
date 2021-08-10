@@ -1,2 +1,1 @@
-import MyHeader from "./Header/Header";
-export const Header = MyHeader;
+export { default as Header } from "./Header/Header";

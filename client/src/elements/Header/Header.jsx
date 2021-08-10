@@ -2,7 +2,7 @@ import { Box, Button } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { dataClear } from "../../Redux/actions";
+import { dataClear } from "../../redux/actions";
 import useStyles from "./HeaderStyle";
 
 const MyHeader = () => {
