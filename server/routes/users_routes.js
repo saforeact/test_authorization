@@ -47,7 +47,7 @@ module.exports = function (app, db) {
         .status(200)
         .json({ message: "The user has successfully registered", token });
     } else {
-      return re0s
+      return res
         .status(401)
         .json({ message: "The user is already registered" });
     }
