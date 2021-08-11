@@ -2,9 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Dashboard, SignIn, SignUp } from "../components";
+import { getIsAuth } from "../redux/selectors";
 
 export const Routers = () => {
-  const isAuth = useSelector((state) => state.user.data.isAuth);
+  const isAuth = useSelector(getIsAuth);
   if (isAuth !== undefined) {
     if (!isAuth) {
       return (

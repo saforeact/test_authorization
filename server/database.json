@@ -1,14 +1,3 @@
 {
-  "users": [
-    {
-      "userId": 0,
-      "login": "admin",
-      "password": "admin"
-    },
-    {
-      "userId": 1,
-      "login": "test",
-      "password": "test"
-    }
-  ]
+  "users": []
 }

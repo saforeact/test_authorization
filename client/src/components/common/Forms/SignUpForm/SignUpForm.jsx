@@ -1,9 +1,17 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  MINIMUM_LENGTH,
+  NOT_COINCIDE,
+  NOT_CORRECT_EMAIL,
+  REQUIRED,
+} from "../../../../constants";
+import { getSingUpFormErrors } from "../../../../redux/selectors";
 import { Input } from "../../UI";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { matchUp, minLength, required, validateEmail } from "../validation";
 
-const _SignUpForm = ({ onSubmit = () => {} }) => {
+const SignUpForm = ({ onSubmit = () => {} }) => {
   const [form, setForm] = useState({
     login: "",
     password: "",
@@ -23,7 +31,7 @@ const _SignUpForm = ({ onSubmit = () => {} }) => {
       [name]: validateShema(name, value),
     }));
   };
-
+  const errorMessage = useSelector(getSingUpFormErrors);
   const sendFormHendler = () => {
     let isValid = true;
     for (let key in form) {
@@ -42,20 +50,30 @@ const _SignUpForm = ({ onSubmit = () => {} }) => {
   const validateShema = (name, value) => {
     switch (name) {
       case "login":
-        return required(value) || validateEmail(value);
-
+        return (
+          (required(value) && REQUIRED) ||
+          (validateEmail(value) && NOT_CORRECT_EMAIL)
+        );
       case "password":
-        return required(value) || minLength(value, 6);
-
+        return (
+          (required(value) && REQUIRED) ||
+          (minLength(value, 6) && MINIMUM_LENGTH(6))
+        );
       case "confirmPassword":
-        return required(value) || matchUp(value, form.password);
-
+        return (
+          (required(value) && REQUIRED) ||
+          (matchUp(value, form.password) && NOT_COINCIDE)
+        );
       default:
         return "";
     }
   };
   return (
-    <EmptyForm submitButtonText="Register" onSubmit={sendFormHendler}>
+    <EmptyForm
+      submitButtonText="Register"
+      onSubmit={sendFormHendler}
+      errorMessage={errorMessage}
+    >
       <Input
         placeholder="Login"
         name="login"
@@ -80,4 +98,4 @@ const _SignUpForm = ({ onSubmit = () => {} }) => {
     </EmptyForm>
   );
 };
-export default _SignUpForm;
+export default SignUpForm;

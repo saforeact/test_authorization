@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  MINIMUM_LENGTH,
+  NOT_CORRECT_EMAIL,
+  REQUIRED,
+} from "../../../../constants";
+import { getSingInFormErrors } from "../../../../redux/selectors";
 import { Input } from "../../UI";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { minLength, required, validateEmail } from "../validation";
 
-const _SignInForm = ({ onSubmit = () => {} }) => {
+const SignInForm = ({ onSubmit = () => {} }) => {
   const [form, setForm] = useState({
     login: "",
     password: "",
@@ -12,14 +19,20 @@ const _SignInForm = ({ onSubmit = () => {} }) => {
     login: "",
     password: "",
   });
-
-  const validateShema = (name, value) => {
+  const errorMessage = useSelector(getSingInFormErrors);
+  const validateSchema = (name, value) => {
     switch (name) {
       case "login":
-        return required(value) || validateEmail(value);
+        return (
+          (required(value) && REQUIRED) ||
+          (validateEmail(value) && NOT_CORRECT_EMAIL)
+        );
 
       case "password":
-        return required(value) || minLength(value, 6);
+        return (
+          (required(value) && REQUIRED) ||
+          (minLength(value, 6) && MINIMUM_LENGTH(6))
+        );
 
       default:
         return "";
@@ -32,14 +45,14 @@ const _SignInForm = ({ onSubmit = () => {} }) => {
 
     setErrors((prevForm) => ({
       ...prevForm,
-      [name]: validateShema(name, value),
+      [name]: validateSchema(name, value),
     }));
   };
 
   const sendFormHendler = () => {
     let isValid = true;
     for (let key in form) {
-      const error = validateShema(key, form[key]);
+      const error = validateSchema(key, form[key]);
       setErrors((prevForm) => ({
         ...prevForm,
         [key]: error,
@@ -52,7 +65,11 @@ const _SignInForm = ({ onSubmit = () => {} }) => {
   };
 
   return (
-    <EmptyForm submitButtonText="Login" onSubmit={sendFormHendler}>
+    <EmptyForm
+      submitButtonText="Login"
+      onSubmit={sendFormHendler}
+      errorMessage={errorMessage}
+    >
       <Input
         placeholder="Login"
         name="login"
@@ -70,4 +87,4 @@ const _SignInForm = ({ onSubmit = () => {} }) => {
     </EmptyForm>
   );
 };
-export default _SignInForm;
+export default SignInForm;

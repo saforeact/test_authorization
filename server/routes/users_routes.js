@@ -5,19 +5,27 @@ const bcrypt = require("bcrypt");
 const { saltRounds } = require("../constants");
 
 module.exports = function (app, db) {
-  app.post("/signIn", (req, res) => {
+  app.get("/getUsers", (req, res) => {
+    res.send(users);
+  });
+  app.post("/signIn", async (req, res) => {
     const { login, password } = req.body;
-    let user = users.find(
-      (user) => user.login === login && bcrypt.compare(password, user.password)
-    );
-    if (user) {
-      const token = jwt.sign({ userId: user.userId }, JWTconfig.secretKey, {
-        expiresIn: "10m",
-      });
-      return res.status(200).json({ token });
-    } else {
+
+    const user = users.find((user) => user.login === login);
+
+    if (!user) {
       return res.status(400).json({ message: "This user is not found." });
     }
+    const passwordCheck = await bcrypt.compare(password, user.password);
+
+    if (!passwordCheck) {
+      return res.status(400).json({ message: "wrong password or name" });
+    }
+
+    const token = jwt.sign({ userId: user.userId }, JWTconfig.secretKey, {
+      expiresIn: "10m",
+    });
+    return res.status(200).json({ token });
   });
 
   app.post("/signUp", async (req, res) => {
@@ -39,7 +47,7 @@ module.exports = function (app, db) {
         .status(200)
         .json({ message: "The user has successfully registered", token });
     } else {
-      return res
+      return re0s
         .status(401)
         .json({ message: "The user is already registered" });
     }
@@ -51,7 +59,7 @@ module.exports = function (app, db) {
     var decoded = jwt.verify(token, JWTconfig.secretKey);
 
     if (decoded) {
-      const user = users.filter((user) => user.userId === decoded.userId)[0];
+      const user = users.find((user) => user.userId === decoded.userId);
       return res.status(200).json({ user });
     } else {
       return res.status(401).json({ message: "Token expired" });

@@ -1,19 +1,12 @@
-import { Box, makeStyles } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { SignUpForm } from "../../elements/Forms";
+import { SignUpForm } from "../common/Forms";
 import { registerAction } from "../../redux/actions";
+import useStyles from "./SignUpStyle";
 
-const useStyle = makeStyles({
-  wrapper: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-  },
-});
 const SignUp = () => {
-  const classes = useStyle();
+  const classes = useStyles();
   const dispatch = useDispatch();
 
   const sendRegisterForm = (form) => {

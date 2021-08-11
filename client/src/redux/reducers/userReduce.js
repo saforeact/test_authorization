@@ -8,20 +8,16 @@ const initialStore = {
 const userReduce = (state = initialStore, action) => {
   switch (action.type) {
     case SET_USER:
-      return { ...state, data: { ...state.data, user: action.payload } };
+      return { ...state, data: { ...state.data, ...action.payload } };
     case SET_ERROR:
-      const { url, message } = action;
-      const nameForm = url.split("/")[1];
-      return { ...state, error: { ...state.error, [nameForm]: message } };
-    case SET_AUTH:
-      return { ...state, data: { ...state.data, isAuth: action.flag } };
-    case DATA_CLEAR:
       return {
-        loading: false,
-        loaded: false,
-        data: { isAuth: false },
-        error: {},
+        ...state,
+        error: { ...state.error, ...action.error },
       };
+    case SET_AUTH:
+      return { ...state, data: { ...state.data, ...action.payload } };
+    case DATA_CLEAR:
+      return action.payload;
     default:
       return { ...state };
   }

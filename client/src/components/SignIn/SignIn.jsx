@@ -1,17 +1,10 @@
-import { Box, makeStyles } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { SignInForm } from "../../elements/Forms";
+import { SignInForm } from "../common/Forms";
 import { loginAction } from "../../redux/actions";
+import useStyle from "./SignInStyle";
 
-const useStyle = makeStyles({
-  wrapper: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flexDirection: "column",
-  },
-});
 const SignIn = () => {
   const classes = useStyle();
 

@@ -3,12 +3,13 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { dataClear } from "../../redux/actions";
+import { getIsAuth } from "../../redux/selectors";
 import useStyles from "./HeaderStyle";
 
 const MyHeader = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const isAuth = useSelector((state) => state.user.data.isAuth);
+  const isAuth = useSelector(getIsAuth);
   const logOutHendler = () => {
     localStorage.removeItem("token");
     dispatch(dataClear());

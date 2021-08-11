@@ -1,9 +1,8 @@
 import axios from "axios";
-import { urlServer } from "../constants";
 
 export const instance = (token = "") =>
   axios.create({
-    baseURL: urlServer,
+    baseURL: process.env.REACT_APP_URL_SERVER,
     headers: {
       "Content-Type": "application/json",
       Authorization: token,
