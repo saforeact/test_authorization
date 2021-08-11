@@ -38,6 +38,7 @@ module.exports = function (app, db) {
         userId: Math.round(Math.random() * 100000),
         login,
         password: hashPassword,
+        isActive: false,
       };
       users.push(user);
       const token = jwt.sign({ userId: user.userId }, JWTconfig.secretKey, {
@@ -60,7 +61,9 @@ module.exports = function (app, db) {
 
     if (decoded) {
       const user = users.find((user) => user.userId === decoded.userId);
-      return res.status(200).json({ user });
+      return res
+        .status(200)
+        .json({ user: { email: user.login, isActive: user.isActive } });
     } else {
       return res.status(401).json({ message: "Token expired" });
     }

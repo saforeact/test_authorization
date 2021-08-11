@@ -15,7 +15,10 @@ const userReduce = (state = initialStore, action) => {
         error: { ...state.error, ...action.error },
       };
     case SET_AUTH:
-      return { ...state, data: { ...state.data, ...action.payload } };
+      return {
+        ...state,
+        data: { ...state.data, ...action.payload },
+      };
     case DATA_CLEAR:
       return action.payload;
     default:

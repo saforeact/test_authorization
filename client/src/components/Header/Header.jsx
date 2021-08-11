@@ -2,6 +2,11 @@ import { Box, Button } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import {
+  KEY_IN_LOCALSTORAGE_JWT_TOKEN,
+  SIGN_IN_PATH,
+  SIGN_UP_PATH,
+} from "../../constants";
 import { dataClear } from "../../redux/actions";
 import { getIsAuth } from "../../redux/selectors";
 import useStyles from "./HeaderStyle";
@@ -10,8 +15,9 @@ const MyHeader = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const isAuth = useSelector(getIsAuth);
+
   const logOutHendler = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
     dispatch(dataClear());
   };
   return (
@@ -19,10 +25,16 @@ const MyHeader = () => {
       <Box className={classes.header}>
         {!isAuth ? (
           <Box className={classes.navBar}>
-            <NavLink to="/signIn" activeClassName={classes.navLink__active}>
+            <NavLink
+              to={SIGN_IN_PATH}
+              activeClassName={classes.navLink__active}
+            >
               <Button color="secondary">SignIn</Button>
             </NavLink>
-            <NavLink to="/signUp" activeClassName={classes.navLink__active}>
+            <NavLink
+              to={SIGN_UP_PATH}
+              activeClassName={classes.navLink__active}
+            >
               <Button color="secondary">SignUp</Button>
             </NavLink>
           </Box>

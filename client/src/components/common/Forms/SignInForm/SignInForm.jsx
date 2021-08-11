@@ -10,7 +10,7 @@ import { Input } from "../../UI";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { minLength, required, validateEmail } from "../validation";
 
-const SignInForm = ({ onSubmit = () => {} }) => {
+const EditProfileForm = ({ onSubmit = () => {} }) => {
   const [form, setForm] = useState({
     login: "",
     password: "",
@@ -87,4 +87,4 @@ const SignInForm = ({ onSubmit = () => {} }) => {
     </EmptyForm>
   );
 };
-export default SignInForm;
+export default EditProfileForm;
