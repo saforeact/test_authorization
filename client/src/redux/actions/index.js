@@ -1,6 +1,7 @@
 import { instance } from "../../axios";
 import {
   CHECK_JWT_TOKEN_REQUEST,
+  EDIT_PROFILE_REQUEST,
   KEY_IN_LOCALSTORAGE_JWT_TOKEN,
   SIGN_IN_REQUEST,
   SIGN_UP_REQUEST,
@@ -36,7 +37,16 @@ export const dataClear = () => {
     },
   };
 };
-
+export const checkToken = () => {
+  return async (dispatch) => {
+    const token = localStorage.getItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
+    if (!token) {
+      dispatch(setAuth(false));
+      return;
+    }
+    return token;
+  };
+};
 export const loginAction = (form) => {
   return async (dispatch) => {
     try {
@@ -44,7 +54,7 @@ export const loginAction = (form) => {
       const { url } = config;
       const { token } = data;
       localStorage.setItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN, token);
-      dispatch(dataAction(token));
+      dispatch(dataAction());
       dispatch(setErrors("", url));
     } catch (error) {
       const { config, data } = error.response;
@@ -66,7 +76,7 @@ export const registerAction = (form) => {
         const { token } = data;
         const { url } = config;
         localStorage.setItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN, token);
-        dispatch(dataAction(token));
+        dispatch(dataAction());
         dispatch(setErrors("", url));
       }
     } catch (error) {
@@ -77,25 +87,45 @@ export const registerAction = (form) => {
     }
   };
 };
-export const dataAction = (token) => {
+
+export const editProfileAction = (form) => {
   return async (dispatch) => {
     try {
-      if (!token) {
-        dispatch(setAuth(false));
-        return;
-      }
-      const { status, data } = await instance(token).post(
-        CHECK_JWT_TOKEN_REQUEST
-      );
-
-      if (status === 200) {
-        const { user } = data;
-        dispatch(setUser(user));
-        dispatch(setAuth(true));
+      const token = await dispatch(checkToken());
+      if (token) {
+        const { status, data } = await instance(token).post(
+          EDIT_PROFILE_REQUEST,
+          { form }
+        );
+        if (status === 200) {
+          const { user } = data;
+          dispatch(setUser(user));
+          dispatch(setAuth(true));
+        }
       }
     } catch (error) {
       localStorage.removeItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
       dispatch(setAuth(false));
+    }
+  };
+};
+export const dataAction = () => {
+  return async (dispatch) => {
+    const token = await dispatch(checkToken());
+    if (token) {
+      try {
+        const { status, data } = await instance(token).post(
+          CHECK_JWT_TOKEN_REQUEST
+        );
+        if (status === 200) {
+          const { user } = data;
+          dispatch(setUser(user));
+          dispatch(setAuth(true));
+        }
+      } catch (error) {
+        localStorage.removeItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
+        dispatch(setAuth(false));
+      }
     }
   };
 };

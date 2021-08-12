@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { Dashboard, FillAProfile, SignIn, SignUp } from "../components";
 import {
   DASHBOARD_PATH,
@@ -8,10 +8,23 @@ import {
   SIGN_IN_PATH,
   SIGN_UP_PATH,
 } from "../constants";
-import { getIsAuth } from "../redux/selectors";
+import { getIsActive, getIsAuth } from "../redux/selectors";
 
 export const Routers = () => {
+  const history = useHistory();
+
   const isAuth = useSelector(getIsAuth);
+  const isActive = useSelector(getIsActive);
+
+  useEffect(() => {
+    if (isAuth) {
+      if (!isActive) {
+        history.push(EDIT_PROFILE_PATH);
+      } else {
+        history.push(DASHBOARD_PATH);
+      }
+    }
+  }, [isAuth, isActive, history]);
 
   if (isAuth !== undefined) {
     if (!isAuth) {
@@ -33,6 +46,6 @@ export const Routers = () => {
       );
     }
   } else {
-    return <></>;
+    return null;
   }
 };

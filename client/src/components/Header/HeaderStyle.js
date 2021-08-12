@@ -3,6 +3,7 @@ import { amber, grey } from "@material-ui/core/colors";
 
 export default makeStyles({
   header: {
+    position: "relative",
     backgroundColor: grey[300],
     height: 100,
     display: "flex",
@@ -24,5 +25,10 @@ export default makeStyles({
     padding: "0 10px",
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
+  },
+  dropDown: {
+    position: "absolute",
+    opacity: 0,
   },
 });

@@ -5,6 +5,21 @@ const bcrypt = require("bcrypt");
 const { saltRounds } = require("../constants");
 
 module.exports = function (app, db) {
+  const checkToken = (req, res, next) => {
+    const token = req.headers.authorization;
+    var decoded = jwt.verify(token, JWTconfig.secretKey);
+    if (decoded) {
+      const user = users.find((user) => user.userId === decoded.userId);
+      if (user) {
+        const { password, userId, ...partUser } = user;
+        req.body.user = partUser;
+        req.body.userId = userId;
+        return next();
+      }
+    } else {
+      return res.status(401).json({ message: "Token expired" });
+    }
+  };
   app.get("/getUsers", (req, res) => {
     res.send(users);
   });
@@ -54,18 +69,19 @@ module.exports = function (app, db) {
     }
   });
 
-  app.post("/data", (req, res) => {
-    const token = req.headers.authorization;
+  app.post("/editProfile", checkToken, (req, res) => {
+    const { form, userId } = req.body;
+    const userIndex = users.findIndex((oldUser) => oldUser.userId === userId);
+    users[userIndex] = { ...users[userIndex], ...form, isActive: true };
+    const newUser = {
+      ...users[userIndex],
+      ...form,
+    };
+    return res.status(200).json({ user: newUser });
+  });
 
-    var decoded = jwt.verify(token, JWTconfig.secretKey);
-
-    if (decoded) {
-      const user = users.find((user) => user.userId === decoded.userId);
-      return res
-        .status(200)
-        .json({ user: { email: user.login, isActive: user.isActive } });
-    } else {
-      return res.status(401).json({ message: "Token expired" });
-    }
+  app.post("/data", checkToken, (req, res) => {
+    const { user } = req.body;
+    return res.status(200).json({ user });
   });
 };

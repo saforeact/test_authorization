@@ -1,5 +1,6 @@
 export const SIGN_IN_REQUEST = "/signIn";
 export const SIGN_UP_REQUEST = "/signUp";
+export const EDIT_PROFILE_REQUEST = "/editProfile";
 export const CHECK_JWT_TOKEN_REQUEST = "/data";
 
 export const EDIT_PROFILE_PATH = "/editProfile";
