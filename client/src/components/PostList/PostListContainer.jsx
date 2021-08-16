@@ -1,9 +1,7 @@
-import { Box } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { getPostsAction, updatePosts } from "../../redux/actions";
-import { getAllPosts, getMetaPosts } from "../../redux/selectors";
+import { getAllPosts, getIsAuth, getMetaPosts } from "../../redux/selectors";
 import Post from "./Post";
 
 const reorder = (list, startIndex, endIndex) => {
@@ -14,34 +12,16 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const Quote = ({ post, index, activeIndex }) => (
-  <Draggable draggableId={post._id} index={index}>
-    {(provided) => (
-      <Box
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <Post post={post} index={index} actionIndex={activeIndex} />
-      </Box>
-    )}
-  </Draggable>
-);
-
-const QuoteList = React.memo(({ postList, activeIndex }) =>
-  postList.map((post, index) => (
-    <Quote post={post} index={index} key={post._id} activeIndex={activeIndex} />
-  ))
-);
-
 const PostListContainer = () => {
+  const dispatch = useDispatch();
+
   const postList = useSelector(getAllPosts);
   const { totalPages, loading } = useSelector(getMetaPosts);
-
+  const isAuth = useSelector(getIsAuth);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [scroll, setScroll] = useState(false);
-  const dispatch = useDispatch();
+
   const scrollHandler = (e) => {
     if (
       e.target.documentElement.scrollHeight -
@@ -51,7 +31,24 @@ const PostListContainer = () => {
       setScroll(true);
     }
   };
+  const onDragEndHendler = (result) => {
+    if (
+      !result.destination ||
+      result.destination.index === result.source.index
+    ) {
+      return;
+    }
 
+    setActiveIndex(-1);
+    dispatch(
+      updatePosts(
+        reorder(postList, result.source.index, result.destination.index)
+      )
+    );
+  };
+  const onDragStartHendler = (e) => {
+    setActiveIndex(e.source.index);
+  };
   useEffect(() => {
     if (!loading && totalPages > currentPage && scroll) {
       dispatch(getPostsAction({ page: currentPage }));
@@ -62,49 +59,30 @@ const PostListContainer = () => {
   }, [scroll]);
 
   useEffect(() => {
+    if (!postList.length && isAuth) {
+      dispatch(getPostsAction({ page: currentPage }));
+      setCurrentPage((prev) => prev + 1);
+      setTimeout(() => setScroll(false), 1000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postList]);
+
+  useEffect(() => {
     document.addEventListener("scroll", scrollHandler);
     return () => {
       document.removeEventListener("scroll", scrollHandler);
     };
   }, []);
-
-  const onDragEndHendler = (result) => {
-    if (!result.destination) {
-      return;
-    }
-
-    if (result.destination.index === result.source.index) {
-      return;
-    }
-
-    const newPostList = reorder(
-      postList,
-      result.source.index,
-      result.destination.index
-    );
-    setActiveIndex(-1);
-    dispatch(updatePosts(newPostList));
-  };
-  const onDragStartHendler = (e) => {
-    setActiveIndex(e.source.index);
-  };
+  if (!postList.length) {
+    return <div>Loading...</div>;
+  }
   return (
-    <Box>
-      <DragDropContext
-        onDragEnd={onDragEndHendler}
-        onDragStart={onDragStartHendler}
-      >
-        <Droppable droppableId="list">
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              <QuoteList postList={postList} activeIndex={activeIndex} />
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <div id="loader"></div>
-    </Box>
+    <Post
+      onDragEndHendler={onDragEndHendler}
+      onDragStartHendler={onDragStartHendler}
+      activeIndex={activeIndex}
+      postList={postList}
+    />
   );
 };
 

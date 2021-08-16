@@ -1,14 +1,8 @@
 import { Box } from "@material-ui/core";
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  KEY_IN_LOCALSTORAGE_JWT_TOKEN,
-  SIGN_IN_PATH,
-  SIGN_UP_PATH,
-} from "../../constants";
-import { dataClear, editProfileAction, setAuth } from "../../redux/actions";
-import { getActiveUser, getIsActive, getIsAuth } from "../../redux/selectors";
+import { SIGN_IN_PATH, SIGN_UP_PATH } from "../../constants";
+import checkIsAuth from "../../hoc/checkIsAuth";
 import {
   AvatarColor,
   DropDown,
@@ -17,37 +11,9 @@ import {
 } from "../common/UI";
 import useStyles from "./HeaderStyle";
 
-const Header = () => {
+const NotAuthHeader = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  const isAuth = useSelector(getIsAuth);
-  const isActive = useSelector(getIsActive);
-  const user = useSelector(getActiveUser);
-
-  const [openModal, setOpenModal] = useState(false);
-  const handleCloseModal = () => {
-    setOpenModal(!openModal);
-  };
-  const logOutHendler = () => {
-    localStorage.removeItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
-    dispatch(setAuth(false));
-    dispatch(dataClear());
-  };
-  const saveNewDataUser = (form) => {
-    dispatch(editProfileAction(form));
-    handleCloseModal();
-  };
-  const option = [
-    {
-      text: "Edit Profile",
-      value: "Edit Profile",
-      func: handleCloseModal,
-    },
-    { text: "Log Out", value: "Log Out", func: logOutHendler },
-  ];
-
-  const notAuthHeader = () => (
+  return (
     <Box className={classes.navBar}>
       <NavLink to={SIGN_IN_PATH} activeClassName={classes.navLink__active}>
         <SecondaryButton>SignIn</SecondaryButton>
@@ -57,8 +23,11 @@ const Header = () => {
       </NavLink>
     </Box>
   );
+};
 
-  const showDropDown = () => (
+const ShowDropDown = ({ option }) => {
+  const classes = useStyles();
+  return (
     <DropDown
       name="avatar_dropDown"
       className={classes.dropDown}
@@ -66,37 +35,57 @@ const Header = () => {
       defaultOption=""
     ></DropDown>
   );
+};
+const AuthHeader = ({ isActive, user, option, logOutHendler }) => {
+  const classes = useStyles();
 
-  const authHeader = () => (
+  return (
     <Box className={classes.authUserBar}>
       <h1>Logo</h1>
       {isActive ? (
         <AvatarColor>
           {String(user.name[0]).toLocaleUpperCase()}
-          {showDropDown()}
+          <ShowDropDown option={option} />
         </AvatarColor>
       ) : (
         <SecondaryButton onClick={logOutHendler}>Log Out</SecondaryButton>
       )}
     </Box>
   );
+};
+const Header = ({
+  isActive,
+  user,
+  option,
+  isAuth,
+  openModal,
+  handleCloseModal,
+  saveNewDataUser,
+  logOutHendler,
+}) => {
+  const classes = useStyles();
 
-  if (isAuth !== undefined) {
-    return (
-      <div>
-        <Box className={classes.header}>
-          <ModalEditProfile
-            open={openModal}
-            handleClose={handleCloseModal}
-            onSubmit={saveNewDataUser}
+  return (
+    <div>
+      <Box className={classes.header}>
+        <ModalEditProfile
+          open={openModal}
+          handleClose={handleCloseModal}
+          onSubmit={saveNewDataUser}
+        />
+        {!isAuth ? (
+          <NotAuthHeader />
+        ) : (
+          <AuthHeader
+            isActive={isActive}
+            user={user}
+            option={option}
+            logOutHendler={logOutHendler}
           />
-          {!isAuth ? notAuthHeader() : authHeader()}
-        </Box>
-      </div>
-    );
-  } else {
-    return null;
-  }
+        )}
+      </Box>
+    </div>
+  );
 };
 
-export default Header;
+export default checkIsAuth(Header);

@@ -1,21 +1,30 @@
 import { Box } from "@material-ui/core";
-import classNames from "classnames";
 import React from "react";
-import useStyles from "./PostListStyles";
-const Post = ({ post, index, actionIndex }) => {
-  const classes = useStyles();
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { QuoteList } from "./dndComponents";
 
+const Post = ({
+  activeIndex,
+  onDragEndHendler,
+  onDragStartHendler,
+  postList,
+}) => {
   return (
-    <Box
-      key={post._id}
-      className={classNames(
-        classes.post,
-        index === actionIndex && classes.activePost
-      )}
-    >
-      <h1 className={classes.title}>{post.titlePost}</h1>
-      <p className={classes.body}>{post.bodyPost}</p>
-      <span className={classes.time}>{post.publicationTime}</span>
+    <Box>
+      <DragDropContext
+        onDragEnd={onDragEndHendler}
+        onDragStart={onDragStartHendler}
+      >
+        <Droppable droppableId="list">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps}>
+              <QuoteList postList={postList} activeIndex={activeIndex} />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <div id="loader"></div>
     </Box>
   );
 };

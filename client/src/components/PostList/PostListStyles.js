@@ -8,6 +8,7 @@ export default makeStyles({
     border: "1px black solid",
     padding: 10,
     backgroundColor: colors.teal[100],
+    userSelect: "none",
   },
   title: {
     alignSelf: "center",

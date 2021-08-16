@@ -17,7 +17,6 @@ const initialStore = {
 const postsReduce = (state = initialStore, action) => {
   switch (action.type) {
     case SET_POST:
-      console.log(`action`, action);
       return { ...state, posts: [...state.posts, ...action.payload] };
     case ADD_POST:
       return { ...state, posts: [action.payload, ...state] };

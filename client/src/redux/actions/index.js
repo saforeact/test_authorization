@@ -159,7 +159,7 @@ export const dataAction = () => {
 
         const { user } = data;
         dispatch(setUser(user));
-        dispatch(getPostsAction({ page: 0 }));
+        // dispatch(getPostsAction({ page: 0 }));
         dispatch(setAuth(true));
       } catch (error) {
         localStorage.removeItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
@@ -171,6 +171,7 @@ export const dataAction = () => {
 export const getPostsAction = ({ page }) => {
   return async (dispatch) => {
     const token = await dispatch(checkToken());
+
     if (token) {
       try {
         dispatch(setLoadingPost(true));
@@ -180,7 +181,9 @@ export const getPostsAction = ({ page }) => {
         });
         const { postList, listInformation } = data;
         dispatch(setMeta(listInformation));
+
         dispatch(setPosts(postList));
+
         dispatch(errorClear());
       } catch (error) {
       } finally {
