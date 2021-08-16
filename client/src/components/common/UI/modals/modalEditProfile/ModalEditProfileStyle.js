@@ -7,8 +7,9 @@ export default makeStyles({
     alignItems: "center",
   },
   modalWindow: {
-    padding: 35,
+    padding: 50,
     borderRadius: 15,
+    boxShadow: "5px 5px 2px black",
     backgroundColor: "white",
   },
 });

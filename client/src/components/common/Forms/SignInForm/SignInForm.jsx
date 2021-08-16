@@ -4,13 +4,15 @@ import {
   MINIMUM_LENGTH,
   NOT_CORRECT_EMAIL,
   REQUIRED,
+  SIGN_IN_FORM,
 } from "../../../../constants";
-import { getSingInFormErrors } from "../../../../redux/selectors";
+import { getFormError } from "../../../../redux/selectors";
 import { Input } from "../../UI";
+import { sendFormHendler, setFormHendler } from "../commonFunc";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { minLength, required, validateEmail } from "../validation";
 
-const EditProfileForm = ({ onSubmit = () => {} }) => {
+const SignInForm = ({ onSubmit = () => {} }) => {
   const [form, setForm] = useState({
     login: "",
     password: "",
@@ -19,7 +21,9 @@ const EditProfileForm = ({ onSubmit = () => {} }) => {
     login: "",
     password: "",
   });
-  const errorMessage = useSelector(getSingInFormErrors);
+  const errorMessage = useSelector((state) =>
+    getFormError(state, SIGN_IN_FORM)
+  );
   const validateSchema = (name, value) => {
     switch (name) {
       case "login":
@@ -27,64 +31,42 @@ const EditProfileForm = ({ onSubmit = () => {} }) => {
           (required(value) && REQUIRED) ||
           (validateEmail(value) && NOT_CORRECT_EMAIL)
         );
-
       case "password":
         return (
           (required(value) && REQUIRED) ||
           (minLength(value, 6) && MINIMUM_LENGTH(6))
         );
-
       default:
         return "";
     }
   };
 
-  const setFormHendler = (e) => {
-    const { name, value } = e.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: value }));
-
-    setErrors((prevForm) => ({
-      ...prevForm,
-      [name]: validateSchema(name, value),
-    }));
-  };
-
-  const sendFormHendler = () => {
-    let isValid = true;
-    for (let key in form) {
-      const error = validateSchema(key, form[key]);
-      setErrors((prevForm) => ({
-        ...prevForm,
-        [key]: error,
-      }));
-      if (error) {
-        isValid = false;
-      }
-    }
-    isValid && onSubmit(form);
-  };
+  const setterForm = (e) =>
+    setFormHendler(e, setForm, setErrors, validateSchema);
+  const sendForm = () =>
+    sendFormHendler(form, setForm, setErrors, onSubmit, validateSchema);
 
   return (
     <EmptyForm
       submitButtonText="Login"
-      onSubmit={sendFormHendler}
+      onSubmit={sendForm}
       errorMessage={errorMessage}
     >
       <Input
         placeholder="Login"
         name="login"
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.login}
         error={errors["login"]}
       />
       <Input
         placeholder="Password"
         name="password"
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.password}
         error={errors["password"]}
       />
     </EmptyForm>
   );
 };
-export default EditProfileForm;
+export default SignInForm;

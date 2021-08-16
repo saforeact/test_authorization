@@ -5,9 +5,11 @@ import {
   NOT_COINCIDE,
   NOT_CORRECT_EMAIL,
   REQUIRED,
+  SIGN_UP_FORM,
 } from "../../../../constants";
-import { getSingUpFormErrors } from "../../../../redux/selectors";
+import { getFormError } from "../../../../redux/selectors";
 import { Input } from "../../UI";
+import { sendFormHendler, setFormHendler } from "../commonFunc";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { matchUp, minLength, required, validateEmail } from "../validation";
 
@@ -22,32 +24,14 @@ const SignUpForm = ({ onSubmit = () => {} }) => {
     password: "",
     confirmPassword: "",
   });
-  const setFormHendler = (e) => {
-    const { name, value } = e.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: value }));
-
-    setErrors((prevForm) => ({
-      ...prevForm,
-      [name]: validateShema(name, value),
-    }));
-  };
-  const errorMessage = useSelector(getSingUpFormErrors);
-  const sendFormHendler = () => {
-    let isValid = true;
-    for (let key in form) {
-      const error = validateShema(key, form[key]);
-      setErrors((prevForm) => ({
-        ...prevForm,
-        [key]: error,
-      }));
-      if (error) {
-        isValid = false;
-      }
-    }
-    isValid && onSubmit(form);
-  };
-
-  const validateShema = (name, value) => {
+  const errorMessage = useSelector((state) =>
+    getFormError(state, SIGN_UP_FORM)
+  );
+  const setterForm = (e) =>
+    setFormHendler(e, setForm, setErrors, validateSchema);
+  const sendForm = () =>
+    sendFormHendler(form, setForm, setErrors, onSubmit, validateSchema);
+  const validateSchema = (name, value) => {
     switch (name) {
       case "login":
         return (
@@ -71,27 +55,27 @@ const SignUpForm = ({ onSubmit = () => {} }) => {
   return (
     <EmptyForm
       submitButtonText="Register"
-      onSubmit={sendFormHendler}
+      onSubmit={sendForm}
       errorMessage={errorMessage}
     >
       <Input
         placeholder="Login"
         name="login"
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.login}
         error={errors.login}
       />
       <Input
         placeholder="Password"
         name="password"
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.password}
         error={errors.password}
       />
       <Input
         placeholder="Confirm Password"
         name="confirmPassword"
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.confirmPassword}
         error={errors.confirmPassword}
       />

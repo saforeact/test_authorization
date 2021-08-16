@@ -14,7 +14,11 @@ export default makeStyles({
       alignItems: "center",
     },
   },
-  navBar: { display: "flex", alignItems: "center", marginLeft: 10 },
+  navBar: {
+    display: "flex",
+    alignItems: "center",
+    marginLeft: 10,
+  },
   navLink__active: {
     border: "2px solid",
     borderRadius: 12,
@@ -22,7 +26,7 @@ export default makeStyles({
   },
   authUserBar: {
     width: "100%",
-    padding: "0 10px",
+    padding: "0 30px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",

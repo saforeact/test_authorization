@@ -1,8 +1,8 @@
 import { Box } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { SignInForm } from "../common/Forms";
 import { loginAction } from "../../redux/actions";
+import { SignInForm } from "../common/Forms";
 import useStyle from "./SignInStyle";
 
 const SignIn = () => {

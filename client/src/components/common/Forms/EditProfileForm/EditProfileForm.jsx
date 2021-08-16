@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { REQUIRED } from "../../../../constants";
+import { useSelector } from "react-redux";
+import { EDIT_PROFILE_FORM, REQUIRED } from "../../../../constants";
+import { getFormError } from "../../../../redux/selectors";
 import { DropDown, Input } from "../../UI";
+import { sendFormHendler, setFormHendler } from "../commonFunc";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { required } from "../validation";
 
@@ -27,7 +30,9 @@ const EditProfileForm = ({
     date: "",
     sex: "",
   });
-  const errorMessage = "";
+  const errorMessage = useSelector((state) =>
+    getFormError(state, EDIT_PROFILE_FORM)
+  );
   const validateSchema = (name, value) => {
     switch (name) {
       case "name":
@@ -47,63 +52,43 @@ const EditProfileForm = ({
     { text: "Male", value: "Male" },
     { text: "Female", value: "Female" },
   ];
-  const setFormHendler = (e) => {
-    console.log(`e`, e);
-    const { name, value } = e.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: value }));
 
-    setErrors((prevForm) => ({
-      ...prevForm,
-      [name]: validateSchema(name, value),
-    }));
-  };
-
-  const sendFormHendler = () => {
-    let isValid = true;
-    for (let key in form) {
-      const error = validateSchema(key, form[key]);
-      setErrors((prevForm) => ({
-        ...prevForm,
-        [key]: error,
-      }));
-      if (error) {
-        isValid = false;
-      }
-    }
-    isValid && onSubmit(form);
-  };
+  const setterForm = (e) =>
+    setFormHendler(e, setForm, setErrors, validateSchema);
+  const sendForm = () =>
+    sendFormHendler(form, setForm, setErrors, onSubmit, validateSchema);
 
   return (
     <EmptyForm
       submitButtonText="Save"
-      onSubmit={sendFormHendler}
+      onSubmit={sendForm}
       errorMessage={errorMessage}
     >
       <Input
         placeholder="Name"
         name={fieldNames.name}
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.name}
         error={errors.name}
       />
       <Input
         placeholder="Surname"
         name={fieldNames.surmane}
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.surname}
         error={errors.surname}
       />
       <Input
         name={fieldNames.date}
         type="date"
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.date}
         error={errors.date}
       />
       <DropDown
         name={fieldNames.sex}
         option={option}
-        onChange={setFormHendler}
+        onChange={setterForm}
         value={form.sex}
         error={errors.sex}
       />

@@ -24,9 +24,11 @@ const DropDown = ({
         error={!!error}
         {...props}
       >
-        <MenuItem value="">
-          <em>{defaultOption}</em>
-        </MenuItem>
+        {defaultOption && (
+          <MenuItem value="">
+            <em>{defaultOption}</em>
+          </MenuItem>
+        )}
         {option.map((item) => (
           <MenuItem
             key={item.value}

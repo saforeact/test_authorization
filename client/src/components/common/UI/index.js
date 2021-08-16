@@ -4,3 +4,4 @@ export { default as SecondaryButton } from "./buttons/SecondaryButton";
 export { default as Input } from "./inputs/Input";
 export { default as DropDown } from "./dropDown/DropDown";
 export { default as ModalEditProfile } from "./modals/modalEditProfile/ModalEditProfile";
+export { default as AvatarColor } from "./avatar/Avatar";

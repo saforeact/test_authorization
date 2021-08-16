@@ -1,5 +1,6 @@
-export const getSingInFormErrors = (state) => state.user.error.signIn;
-export const getSingUpFormErrors = (state) => state.user.error.signUp;
-export const getIsAuth = (state) => state.user.data.isAuth;
-export const getIsActive = (state) => state.user.data.user?.isActive;
-export const getActiveUser = (state) => state.user.data.user;
+export const getFormError = (state, name) => state.errors[name];
+export const getIsAuth = (state) => state.auth.isAuth;
+export const getIsActive = (state) => state.user.isActive;
+export const getActiveUser = (state) => state.user;
+export const getAllPosts = (state) => state.posts.posts;
+export const getMetaPosts = (state) => state.posts.meta;
