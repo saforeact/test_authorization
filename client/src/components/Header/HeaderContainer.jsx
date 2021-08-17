@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { KEY_IN_LOCALSTORAGE_JWT_TOKEN } from "../../constants";
-import checkIsAuth from "../../hoc/checkIsAuth";
 import { dataClear, editProfileAction, setAuth } from "../../redux/actions";
 import { getActiveUser, getIsActive, getIsAuth } from "../../redux/selectors";
 import Header from "./Header";
@@ -11,6 +10,7 @@ const HeaderContainer = () => {
 
   const isAuth = useSelector(getIsAuth);
   const isActive = useSelector(getIsActive);
+  // const user = { name: "asda" };
   const user = useSelector(getActiveUser);
 
   const [openModal, setOpenModal] = useState(false);
@@ -35,7 +35,9 @@ const HeaderContainer = () => {
     },
     { text: "Log Out", value: "Log Out", func: logOutHendler },
   ];
-
+  if (isAuth === undefined) {
+    return null;
+  }
   return (
     <Header
       isActive={isActive}
@@ -50,4 +52,4 @@ const HeaderContainer = () => {
   );
 };
 
-export default checkIsAuth(HeaderContainer);
+export default HeaderContainer;

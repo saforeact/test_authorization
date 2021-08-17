@@ -2,7 +2,6 @@ import { Box } from "@material-ui/core";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { SIGN_IN_PATH, SIGN_UP_PATH } from "../../constants";
-import checkIsAuth from "../../hoc/checkIsAuth";
 import {
   AvatarColor,
   DropDown,
@@ -38,7 +37,6 @@ const ShowDropDown = ({ option }) => {
 };
 const AuthHeader = ({ isActive, user, option, logOutHendler }) => {
   const classes = useStyles();
-
   return (
     <Box className={classes.authUserBar}>
       <h1>Logo</h1>
@@ -64,28 +62,25 @@ const Header = ({
   logOutHendler,
 }) => {
   const classes = useStyles();
-
   return (
-    <div>
-      <Box className={classes.header}>
-        <ModalEditProfile
-          open={openModal}
-          handleClose={handleCloseModal}
-          onSubmit={saveNewDataUser}
+    <Box className={classes.header}>
+      <ModalEditProfile
+        open={openModal}
+        handleClose={handleCloseModal}
+        onSubmit={saveNewDataUser}
+      />
+      {!isAuth ? (
+        <NotAuthHeader />
+      ) : (
+        <AuthHeader
+          isActive={isActive}
+          user={user}
+          option={option}
+          logOutHendler={logOutHendler}
         />
-        {!isAuth ? (
-          <NotAuthHeader />
-        ) : (
-          <AuthHeader
-            isActive={isActive}
-            user={user}
-            option={option}
-            logOutHendler={logOutHendler}
-          />
-        )}
-      </Box>
-    </div>
+      )}
+    </Box>
   );
 };
 
-export default checkIsAuth(Header);
+export default Header;

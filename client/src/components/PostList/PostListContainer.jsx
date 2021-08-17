@@ -16,7 +16,7 @@ const PostListContainer = () => {
   const dispatch = useDispatch();
 
   const postList = useSelector(getAllPosts);
-  const { totalPages, loading } = useSelector(getMetaPosts);
+  const { totalPages } = useSelector(getMetaPosts);
   const isAuth = useSelector(getIsAuth);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [currentPage, setCurrentPage] = useState(0);
@@ -38,7 +38,6 @@ const PostListContainer = () => {
     ) {
       return;
     }
-
     setActiveIndex(-1);
     dispatch(
       updatePosts(
@@ -50,7 +49,7 @@ const PostListContainer = () => {
     setActiveIndex(e.source.index);
   };
   useEffect(() => {
-    if (!loading && totalPages > currentPage && scroll) {
+    if (totalPages > currentPage && scroll) {
       dispatch(getPostsAction({ page: currentPage }));
       setCurrentPage((prev) => prev + 1);
       setTimeout(() => setScroll(false), 1000);
@@ -65,7 +64,7 @@ const PostListContainer = () => {
       setTimeout(() => setScroll(false), 1000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postList]);
+  }, []);
 
   useEffect(() => {
     document.addEventListener("scroll", scrollHandler);
@@ -73,9 +72,6 @@ const PostListContainer = () => {
       document.removeEventListener("scroll", scrollHandler);
     };
   }, []);
-  if (!postList.length) {
-    return <div>Loading...</div>;
-  }
   return (
     <Post
       onDragEndHendler={onDragEndHendler}

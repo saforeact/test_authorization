@@ -18,6 +18,7 @@ import {
   ERROR_CLEAR,
   SET_AUTH,
   SET_ERROR,
+  SET_IS_ACTIVE,
   SET_LOADING_POST,
   SET_META,
   SET_POST,
@@ -62,6 +63,12 @@ export const setUser = (payload) => {
     payload,
   };
 };
+export const setIsActive = (payload) => {
+  return {
+    type: SET_IS_ACTIVE,
+    payload,
+  };
+};
 export const setErrors = (formName, message) => {
   return {
     type: SET_ERROR,
@@ -83,7 +90,6 @@ export const errorClear = () => {
 export const dataClear = () => {
   return {
     type: DATA_CLEAR,
-    payload: {},
   };
 };
 export const checkToken = () => {
@@ -158,8 +164,10 @@ export const dataAction = () => {
         const { data } = await instance(token).post(CHECK_JWT_TOKEN_REQUEST);
 
         const { user } = data;
-        dispatch(setUser(user));
-        // dispatch(getPostsAction({ page: 0 }));
+        const { isActive, ...partUser } = user;
+
+        dispatch(setUser(partUser));
+        dispatch(setIsActive(isActive));
         dispatch(setAuth(true));
       } catch (error) {
         localStorage.removeItem(KEY_IN_LOCALSTORAGE_JWT_TOKEN);
@@ -180,9 +188,8 @@ export const getPostsAction = ({ page }) => {
           page: page,
         });
         const { postList, listInformation } = data;
-        dispatch(setMeta(listInformation));
-
         dispatch(setPosts(postList));
+        dispatch(setMeta(listInformation));
 
         dispatch(errorClear());
       } catch (error) {

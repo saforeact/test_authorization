@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { DASHBOARD_PATH, EDIT_PROFILE_PATH, SIGN_IN_PATH } from "../constants";
@@ -11,8 +11,10 @@ const checkIsAuth =
     const isActive = useSelector(getIsActive);
 
     const history = useHistory();
-
-    React.useEffect(() => {
+    if (isAuth === undefined) {
+      return null;
+    }
+    useEffect(() => {
       if (isAuth) {
         if (!isActive) {
           history.push(EDIT_PROFILE_PATH);
@@ -23,10 +25,6 @@ const checkIsAuth =
         history.push(SIGN_IN_PATH);
       }
     }, [isAuth, isActive, history]);
-
-    if (isAuth === undefined) {
-      return null;
-    }
 
     return <Component {...props} />;
   };

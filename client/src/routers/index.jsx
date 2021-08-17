@@ -12,11 +12,11 @@ import checkIsAuth from "../hoc/checkIsAuth";
 const Routers = () => {
   return (
     <Switch>
-      <Route path={SIGN_IN_PATH} component={SignIn} />
-      <Route path={SIGN_UP_PATH} component={SignUp} />
-      <Route path={EDIT_PROFILE_PATH} component={FillAProfile} />
-      <Route path={DASHBOARD_PATH} component={Dashboard} />
+      <Route path={SIGN_IN_PATH} component={checkIsAuth(SignIn)} />
+      <Route path={SIGN_UP_PATH} component={checkIsAuth(SignUp)} />
+      <Route path={EDIT_PROFILE_PATH} component={checkIsAuth(FillAProfile)} />
+      <Route path={DASHBOARD_PATH} component={checkIsAuth(Dashboard)} />
     </Switch>
   );
 };
-export default checkIsAuth(Routers);
+export default Routers;

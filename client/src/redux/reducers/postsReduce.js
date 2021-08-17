@@ -11,6 +11,8 @@ const initialStore = {
   posts: [],
   meta: {
     loading: false,
+    totalPages: 0,
+    total: 0,
   },
 };
 
@@ -19,7 +21,7 @@ const postsReduce = (state = initialStore, action) => {
     case SET_POST:
       return { ...state, posts: [...state.posts, ...action.payload] };
     case ADD_POST:
-      return { ...state, posts: [action.payload, ...state] };
+      return { ...state, posts: [action.payload, ...state.posts] };
     case UPDATE_POST:
       return { ...state, posts: [...action.payload] };
     case SET_META:
@@ -27,7 +29,14 @@ const postsReduce = (state = initialStore, action) => {
     case SET_LOADING_POST:
       return { ...state, meta: { ...state.meta, ...action.payload } };
     case DATA_CLEAR:
-      return {};
+      return {
+        posts: [],
+        meta: {
+          loading: false,
+          totalPages: 0,
+          total: 0,
+        },
+      };
     default:
       return { ...state };
   }

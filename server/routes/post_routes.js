@@ -36,7 +36,6 @@ postRouter.post("/setPost", async (req, res) => {
 });
 postRouter.post("/", async (req, res) => {
   const { _id, limit, page } = req.body;
-  console.log(`req.body`, req.body);
   try {
     const postList = [...(await Post.find({ autorId: _id }))].reverse();
     const total = postList.length;

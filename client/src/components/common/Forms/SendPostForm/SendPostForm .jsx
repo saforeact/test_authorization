@@ -6,8 +6,9 @@ import { Input } from "../../UI";
 import { sendFormHendler, setFormHendler } from "../commonFunc";
 import EmptyForm from "../EmptyForm/EmptyForm";
 import { required } from "../validation";
-
+import useStyles from "./SendPostFormStyle";
 const SendPostForm = ({ onSubmit = () => {} }) => {
+  const classes = useStyles();
   const fieldsName = {
     title: "title",
     body: "body",
@@ -43,6 +44,7 @@ const SendPostForm = ({ onSubmit = () => {} }) => {
       submitButtonText="Send"
       onSubmit={sendForm}
       errorMessage={errorMessage}
+      className={classes.wrapper}
     >
       <Input
         name={fieldsName.title}
